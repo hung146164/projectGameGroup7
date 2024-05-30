@@ -659,7 +659,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!60 &1079166108
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -786,8 +786,8 @@ Transform:
   m_GameObject: {fileID: 1079166106}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.0732, y: -1.8874, z: 0}
-  m_LocalScale: {x: 8.056872, y: 4.111417, z: 1}
+  m_LocalPosition: {x: -10.4864, y: -2.6878, z: 0}
+  m_LocalScale: {x: 2.1151698, y: 2.4623508, z: 0.4602}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -825,7 +825,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab22ed3adee4b8f47a2b2d90f8ec193b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tocdo: 4
+  tocdo: 3
+  jumpForce: 3
   rb: {fileID: 0}
 --- !u!1 &1117585372
 GameObject:
