@@ -1,5 +1,4 @@
 ﻿using System;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class heroMove : MonoBehaviour
@@ -8,15 +7,19 @@ public class heroMove : MonoBehaviour
     private bool isJump;
     public float tocdo;
     public float jumpForce;
+    public float doubleJumpForce; // Lực nhảy double
     public Rigidbody2D rb;
     private Animator animator;
     private bool isFacingRight = true;
     private bool isGrounded;
+    private bool isDoubleJumpAvailable = false; // Biến để kiểm tra có thể nhảy double hay không
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        jumpForce = 10;
+        doubleJumpForce = 12; // Thiết lập lực nhảy double
     }
 
     // Update is called once per frame
@@ -28,10 +31,20 @@ public class heroMove : MonoBehaviour
         animator.SetFloat("move", Math.Abs(trai_phai));
 
         // Handle jumping when up arrow is pressed and character is grounded
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            animator.SetBool("jump", true);
+            if (isGrounded)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                animator.SetBool("jump", true);
+                isDoubleJumpAvailable = true;
+            }
+            else if (isDoubleJumpAvailable)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);
+                animator.SetBool("jump", true);
+                isDoubleJumpAvailable = false;
+            }
         }
     }
 
