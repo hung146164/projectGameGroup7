@@ -46,6 +46,18 @@ public class heroMove : MonoBehaviour
                 isDoubleJumpAvailable = false;
             }
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+
+            animator.SetInteger("attack",1);
+        }
+        else
+        {
+            animator.SetInteger("attack", 0);
+
+        }
+
+
     }
 
     void flip()
