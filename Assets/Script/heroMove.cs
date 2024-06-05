@@ -1,90 +1,113 @@
 ﻿using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class heroMove : MonoBehaviour
 {
-    private float trai_phai;
-    private bool isJump;
-    public float tocdo;
-    public float jumpForce;
-    public float doubleJumpForce; // Lực nhảy double
-    public Rigidbody2D rb;
+    [SerializeField] private float speed=10f;
+    [SerializeField] float jumpforce=10f;
+    [SerializeField] GameObject skill2;
+    private Rigidbody2D Rigidbody2D;
     private Animator animator;
-    private bool isFacingRight = true;
-    private bool isGrounded;
-    private bool isDoubleJumpAvailable = false; // Biến để kiểm tra có thể nhảy double hay không
-
-    void Start()
+    private bool canJump;
+    private float xInput;
+    private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        jumpForce = 10;
-        doubleJumpForce = 12; // Thiết lập lực nhảy double
+        Rigidbody2D = GetComponent<Rigidbody2D>();
+        
+        canJump = true;
     }
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        trai_phai = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(trai_phai * tocdo, rb.velocity.y);
-        flip();
-        animator.SetFloat("move", Math.Abs(trai_phai));
-
-        // Handle jumping when up arrow is pressed and character is grounded
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        movePlayer();
+        Jump();
+        Attack();
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Ground"))
         {
-            if (isGrounded)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                animator.SetBool("jump", true);
-                isDoubleJumpAvailable = true;
-            }
-            else if (isDoubleJumpAvailable)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);
-                animator.SetBool("jump", true);
-                isDoubleJumpAvailable = false;
-            }
+            canJump = true;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+    }
+    void movePlayer()
+    {
+
+        xInput = Input.GetAxis("Horizontal");
+        float velocityPlayer = xInput * speed;
+        Rigidbody2D.velocity = new Vector2(velocityPlayer, Rigidbody2D.velocity.y);
+
+        if (xInput != 0)
         {
 
-            animator.SetInteger("attack",1);
+            flip();
+            animator.SetBool("Run", true);
+            if (Mathf.Abs(velocityPlayer) < 10)
+            {
+                animator.SetFloat("move", 1);
+            }
+            else
+            {
+                animator.SetFloat("move", 0);
+            }
+
         }
         else
         {
-            animator.SetInteger("attack", 0);
-
+            animator.SetBool("Run", false);
         }
-
 
     }
 
-    void flip()
+    private void flip()
     {
-        if (isFacingRight && trai_phai < 0 || !isFacingRight && trai_phai > 0)
-        {
-            isFacingRight = !isFacingRight;
-            Vector3 scale = transform.localScale;
-            scale.x *= -1;
-            transform.localScale = scale;
-        }
+        Vector3 playerScale = transform.localScale;
+        playerScale.x = MathF.Abs(playerScale.x) * MathF.Sign(xInput);
+
+        transform.localScale = playerScale;
+
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    private void Jump()
     {
-        if (collision.gameObject.CompareTag("Ground"))
+
+        if (Input.GetKey(KeyCode.M) && canJump)
         {
-            isGrounded = true;
+            canJump = false;
+            Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, jumpforce);
+            animator.SetBool("jump", true);
+            animator.SetFloat("isJump", 0);
+        }
+        else if (canJump)
+        {
             animator.SetBool("jump", false);
         }
     }
-
-    private void OnCollisionExit2D(Collision2D collision)
+    private void Attack()
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if(Input.GetKey(KeyCode.Space))
         {
-            isGrounded = false;
+            if (!canJump)
+            {
+                animator.SetFloat("isJump", 1);
+            }
+            animator.SetBool("attack", true);
+            animator.SetFloat("isAttack", 0);  
         }
+        else if(Input.GetKey(KeyCode.J))
+        {
+            animator.SetBool("attack", true);
+            animator.SetFloat("isAttack", 1);
+        }
+        else { animator.SetBool("attack", false); }
+    }
+
+    void skill2_set()
+    {
+        GameObject skillclone=Instantiate(skill2,transform.position, Quaternion.identity);
+        skillclone.SetActive(true);
+
     }
 }
