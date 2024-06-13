@@ -5,17 +5,21 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - enemy
+  - audio
+  - RightSpikeBall
+  - LeftSpikeBall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Enemy
+  - Ground
+  - HitBox
+  - Event
   - 
   - 
   - 

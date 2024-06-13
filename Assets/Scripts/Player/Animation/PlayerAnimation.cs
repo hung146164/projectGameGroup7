@@ -7,7 +7,7 @@ public class PlayerAnimation : MonoBehaviour
     Rigidbody2D rb;
     Animator animator;
     Hero player;
-    
+    [SerializeField]GameObject GameOverUI;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -30,6 +30,7 @@ public class PlayerAnimation : MonoBehaviour
     }
     public void SetAnimMove(float playerVelocity)
     {
+   
         AnimState("Move", true);
         if (Mathf.Abs(playerVelocity) < 3f)
         {
@@ -69,6 +70,12 @@ public class PlayerAnimation : MonoBehaviour
         if (player.Health<1)
         {
             AnimState("Died", true);
+            AudioManager.instance.PlaySFX("GameOver");
         }
+    }
+    void activeOverUI()
+    {
+        GameOverUI.SetActive(true);
+       
     }
 }

@@ -6,18 +6,26 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float speed = 10f;
     [SerializeField] float jumpForce = 10f;
+    [SerializeField] float dashlevel=20f;
+    [SerializeField] float dashTime=0.4f;
+    [SerializeField] float runSFXInterval = 0.5f;
+    bool isDashing = false;
+    TrailRenderer trailRenderer;
+
     Rigidbody2D rb;
     PlayerAnimation setAnim;
-    bool canJump;
-
-
+    bool canJump=true;
+    private bool isMoving = false;
+    private float lastRunSFXTime;
     float xInput;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         setAnim = GetComponent<PlayerAnimation>();
-        canJump = true;
+        trailRenderer = GetComponent<TrailRenderer>();
+        lastRunSFXTime = -runSFXInterval;
     }
+
     private void Update()
     {
         SetPlayerMoveHorizontal();
@@ -34,19 +42,34 @@ public class PlayerMovement : MonoBehaviour
     void SetPlayerMoveHorizontal()
     {
         xInput = Input.GetAxis("Horizontal");
-        if (xInput != 0)
+        float playerVelocity = xInput * speed;
+        if (!isDashing)
         {
-            float playerVelocity = xInput * speed;
             rb.velocity = new Vector2(playerVelocity, rb.velocity.y);
+        }  
+        if (xInput != 0 && !isDashing && canJump==true)
+        {
+            if (!isMoving)
+            {
+                isMoving = true;
+            }
+            Flip();
             setAnim.SetAnimMove(playerVelocity);
-            flip();
+
+            // Chỉ phát âm thanh nếu đã đủ thời gian chờ giữa các lần phát
+            if (Time.time - lastRunSFXTime >= runSFXInterval)
+            {
+                AudioManager.instance.PlaySFX("Run");
+                lastRunSFXTime = Time.time; // Cập nhật thời gian phát âm thanh cuối cùng
+            }
         }
         else
         {
+            isMoving = false;
             setAnim.AnimState("Move", false);
         }
     }
-    void flip()
+    void Flip() 
     {
         Vector3 newScale = transform.localScale;
         newScale.x = Mathf.Abs(newScale.x) * Mathf.Sign(xInput);
@@ -56,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && canJump)
         {
+            AudioManager.instance.PlaySFX("Jump");
             canJump = false;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
@@ -65,5 +89,27 @@ public class PlayerMovement : MonoBehaviour
             setAnim.SetAnimJump();
         }
     }
-    
+    void Dash()
+    {
+        StartCoroutine(WaitForDash());
+        AudioManager.instance.PlaySFX("Dash");
+    }
+    IEnumerator WaitForDash()
+    {
+        isDashing = true;
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0;
+        rb.velocity = new Vector2(transform.localScale.x * dashlevel, 0f);
+        trailRenderer.emitting = true;
+        int layerpl = gameObject.layer;
+        gameObject.layer = 0;
+        yield return new WaitForSeconds(dashTime);
+        gameObject.layer = layerpl;
+        rb.gravityScale = originalGravity;
+        rb.velocity = Vector2.zero;
+        trailRenderer.emitting = false;
+        trailRenderer.Clear();
+        isDashing = false;
+    }
+
 }
