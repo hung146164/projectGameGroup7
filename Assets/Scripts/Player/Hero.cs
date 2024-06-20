@@ -1,14 +1,38 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hero : MonoBehaviour
+public class PlayerInfo : MonoBehaviour
 {
+    public static PlayerInfo instance;
 
     public event Action OnHealthChange;
     public event Action OnManaChange;
-    [SerializeField] private float health;
+    public event Action OnDameChange;
+    public event Action OnArmorChange;
+    public event Action OnScoreChange;
+    HitBox hitBox;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            // Đảm bảo không bị hủy khi chuyển scene
+            DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject); 
+        }
+
+        hitBox = transform.Find("Hitbox").GetComponent<HitBox>();   
+    }
+    private void Start()
+    {
+        hitBox.SetDameHitBox(damage);
+    }
+    [SerializeField]private float health;
     [SerializeField] private float maxHealth;
     [SerializeField] private float mana;
     [SerializeField] private float maxMana;
@@ -16,29 +40,68 @@ public class Hero : MonoBehaviour
     [SerializeField] private float damage;
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
+    private int scores=5;
 
-    public float Health => health;
-    public float MaxHealth => maxHealth;
-    public float Mana => mana;
-    public float MaxMana => maxMana;
-    public float Armor => armor;
-    public float Damage => damage;
-    public float Speed => speed;
-    public float JumpForce => jumpForce;
+    public float Health
+    {
+        get => health; 
+        set
+        {
+            if (health != value)
+            {
+                health = value;
 
-    public void ChangeDamage(float amount, bool add) => damage += add ? amount : -amount;
-    public void ChangeMana(float amount, bool add)
-    {
-        mana += add ? amount : -amount;
-        mana=Mathf.Clamp(mana, 0, maxMana);
-        OnManaChange?.Invoke();
+                health = Mathf.Clamp(value, 0, maxHealth);
+                //gọi sự kiện nếu hp có thay đổi 
+                OnHealthChange?.Invoke();
+            }
+        }
     }
-    public void ChangeHealth(float amount, bool add)
-    {
-        health += add ? amount : -amount;
-        health = Mathf.Clamp(health, 0, maxHealth);
-        OnHealthChange?.Invoke();
+    public float MaxHealth { get => maxHealth; set => maxHealth = value; }
+    public float Mana {
+        get => mana; 
+        set
+        {
+            if (mana != value)
+            {
+                mana = value;
+                mana = Mathf.Clamp(value, 0, MaxMana);
+                OnManaChange?.Invoke();
+            }
+        }
     }
-    public void ChangeArmor(float amount, bool add) => armor += add ? amount : -amount;
-    public void ChangeSpeed(float amount, bool add) => speed += add ? amount : -amount;
+    public float MaxMana { get => maxMana; set => maxMana = value; }
+    public float Armor { get => armor;
+        set
+        {
+            if (armor != value)
+            {
+                armor = value;
+                OnArmorChange?.Invoke();
+            }
+        }
+    }
+    public float Damage { get => damage;
+        set
+        {
+            if(damage!=value)
+            {
+                damage= value;
+                hitBox.SetDameHitBox(value);
+                OnDameChange?.Invoke();
+            }
+        }
+    }
+    public float Speed { get => speed; set => speed = value; }
+    public float JumpForce { get => jumpForce; set => jumpForce = value; }
+    public int Scores { get => scores;
+        set
+        {
+            if (scores != value)
+            {
+                scores = value;
+                OnScoreChange?.Invoke();
+            }
+        }
+    }
 }
