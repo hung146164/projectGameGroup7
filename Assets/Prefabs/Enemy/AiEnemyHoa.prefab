@@ -11,17 +11,17 @@ GameObject:
   - component: {fileID: 6079729542451297270}
   - component: {fileID: 2162733197603599388}
   - component: {fileID: 6566972047953448081}
-  - component: {fileID: 5349510499722486203}
-  - component: {fileID: 3301454516719224203}
+  - component: {fileID: 4468776015428946967}
+  - component: {fileID: 4572212356732639982}
   - component: {fileID: 4579712208182503950}
   - component: {fileID: 807264264550884002}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AiEnemyHoa
   m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 0
 --- !u!4 &6079729542451297270
 Transform:
   m_ObjectHideFlags: 0
@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 725372175094182078}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 123.99, y: 8, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 0}
   m_ConstrainProportionsScale: 0
@@ -112,7 +112,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5349510499722486203
+--- !u!114 &4468776015428946967
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,18 +121,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 725372175094182078}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00c549e2cafab0848867f7cb91ce4829, type: 3}
+  m_Script: {fileID: 11500000, guid: e073c75fb08f55c4d97b072307a5b218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
   maxHealth: 100
-  mana: 100
-  maxMana: 0
   armor: 20
-  damage: 10
-  speed: 20
-  jumpForce: 10
---- !u!114 &3301454516719224203
+  damage: 20
+  speed: 10
+--- !u!114 &4572212356732639982
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,11 +138,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 725372175094182078}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f9611277266cd546bc60207cc9ba1ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 721d3ab8ac7f165428eb936f5b711737, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damepopup: {fileID: 6451800190905030145, guid: 99224cca4fed48c409432e466ba7785f, type: 3}
   HealBar: {fileID: 836344025486439341}
+  enemyInfo: {fileID: 4468776015428946967}
 --- !u!114 &4579712208182503950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,7 +160,7 @@ MonoBehaviour:
   lineOfSite: 20.7
   player: {fileID: 0}
   Bullet: {fileID: 0}
-  Win: {fileID: 0}
+  spawnPos: {x: 110, y: 11, z: 0}
 --- !u!61 &807264264550884002
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -219,12 +217,12 @@ GameObject:
   - component: {fileID: 8766031363539484633}
   - component: {fileID: 9111887346233768160}
   - component: {fileID: 8744938602105860438}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &8766031363539484633
 Transform:
@@ -305,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9689d4089901b934bb4dd2e8c58f7f57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 725372175094182078}
+  DameHitbox: 0
 --- !u!1 &4255175621830926799
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,12 +314,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2318617115036056794}
   - component: {fileID: 1683571742213544105}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BarSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &2318617115036056794
 Transform:
@@ -400,12 +398,12 @@ GameObject:
   m_Component:
   - component: {fileID: 6199960077859602784}
   - component: {fileID: 8612700205414599010}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6199960077859602784
 Transform:
@@ -484,12 +482,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 836344025486439341}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &836344025486439341
 Transform:
@@ -516,12 +514,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4877661624005222058}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 0
 --- !u!4 &4877661624005222058
 Transform:
@@ -578,6 +576,14 @@ PrefabInstance:
     - target: {fileID: 1038285866217456329, guid: af8c5f0c2fb5cb14f864c19cecf43558, type: 3}
       propertyPath: m_Name
       value: Healbar
+      objectReference: {fileID: 0}
+    - target: {fileID: 1038285866217456329, guid: af8c5f0c2fb5cb14f864c19cecf43558, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1038285866217456329, guid: af8c5f0c2fb5cb14f864c19cecf43558, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 1877670072620301913, guid: af8c5f0c2fb5cb14f864c19cecf43558, type: 3}
       propertyPath: m_LocalScale.x
@@ -694,6 +700,14 @@ PrefabInstance:
     - target: {fileID: 5537883053219299145, guid: af8c5f0c2fb5cb14f864c19cecf43558, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6346367997705904336, guid: af8c5f0c2fb5cb14f864c19cecf43558, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6346367997705904336, guid: af8c5f0c2fb5cb14f864c19cecf43558, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 7320290125417835687, guid: af8c5f0c2fb5cb14f864c19cecf43558, type: 3}
       propertyPath: m_IsActive

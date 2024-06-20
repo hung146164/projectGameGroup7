@@ -7,13 +7,18 @@ public class DanDuoitheo : MonoBehaviour
     public float velocitySkill;
     public Transform PlayerPosition;
     public Transform EnemyPosition;
+    AudioManager audioManager;
     private void Start()
     {
         Move_skill();
+        audioManager=GameObject.FindWithTag("audio").GetComponent<AudioManager>();
+        AudioManager.instance.PlaySFX("BossFire");
+
     }
 
     void Move_skill()
     {
+        
         float direction = Mathf.Sign(PlayerPosition.localScale.x);
 
         Vector3 newScale = transform.localScale;

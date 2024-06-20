@@ -1,21 +1,25 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 
 public class PlayerAttack : MonoBehaviour
 {
-    PlayerAnimation setAnim;
-    private bool canAttack = true;
+    private PlayerAnimation setAnim;
     private bool canSkill1 = true;
     private bool canSkill2 = true;
+    private bool canSkill3 = true;
+    private bool canSkill4 = true;
+    private bool isWaiting = false;
 
-    [SerializeField] SkillUI skillUI;
-    [SerializeField] GameObject fireObj;
-
+    [SerializeField] private SkillUI skillUI;
+    [SerializeField] private GameObject fireObj;
+    [SerializeField] private float waitForNextSkillTime = 0.3f;
+    [SerializeField] private Rigidbody2D rb;
     private void Start()
     {
         setAnim = GetComponent<PlayerAnimation>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
@@ -25,17 +29,34 @@ public class PlayerAttack : MonoBehaviour
 
     private void HandleAttack()
     {
-        if (Input.GetKey(KeyCode.J) && canAttack)
+        if (Input.GetKey(KeyCode.J) && canSkill1 && !isWaiting && PlayerInfo.instance.Mana>=2)
         {
-            Attack(skillUI.coolDownSkill1, skillUI.Skill1Image, -1, SkillType.BasicAttack);
+            PlayerInfo.instance.Mana -= 2;
+            isWaiting = true;
+            Attack(skillUI.coolDownSkill1, skillUI.Skill1Image, StateAttack.attack, SkillType.Skill1);
+            AudioManager.instance.PlaySFX("Attack");
         }
-        else if (Input.GetKey(KeyCode.U) && canSkill1)
+        else if (Input.GetKey(KeyCode.U) && canSkill2 && !isWaiting && PlayerInfo.instance.Mana>=5)
         {
-            Attack(skillUI.coolDownSkill2, skillUI.Skill2Image, 0, SkillType.Skill1);
+            PlayerInfo.instance.Mana -= 5;
+            isWaiting = true;
+            Attack(skillUI.coolDownSkill2, skillUI.Skill2Image, StateAttack.fireAttack, SkillType.Skill2);
+            AudioManager.instance.PlaySFX("Fire");
+
         }
-        else if (Input.GetKey(KeyCode.O) && canSkill2)
+        else if (Input.GetKey(KeyCode.O) && canSkill3 && !isWaiting)
         {
-            Attack(skillUI.coolDownSkill3, skillUI.Skill3Image, 1, SkillType.Skill2);
+            isWaiting = true;
+            Attack(skillUI.coolDownSkill3, skillUI.Skill3Image, StateAttack.shield, SkillType.Skill3);
+            AudioManager.instance.PlaySFX("Shield");
+
+        }
+        else if (Input.GetKey(KeyCode.I) && canSkill4 && !isWaiting && PlayerInfo.instance.Mana >= 3)
+        {
+            PlayerInfo.instance.Mana -= 3;
+            isWaiting = true;
+            Attack(skillUI.coolDownSkill4, skillUI.Skill4Image, StateAttack.luotChem, SkillType.Skill4);
+
         }
         else
         {
@@ -43,19 +64,23 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    private void Attack(float cooldown, Image skillImage, int attackType, SkillType skillType)
+    private void Attack(float cooldown, Image skillImage, float attackType, SkillType skillType)
     {
+        rb.velocity = new Vector2(0,rb.velocity.y);
+        PlayerMovement.instance.isAttacking = true;
         SetSkillAvailability(skillType, false);
         StartCoroutine(Cooldown(cooldown, skillImage, () => SetSkillAvailability(skillType, true)));
         setAnim.AnimState("Attack", true);
         setAnim.AnimType("isAttack", attackType);
+        StartCoroutine(WaitBetweenSkills(waitForNextSkillTime));
     }
 
-    private IEnumerator Cooldown(float time, Image skillImage, Action onCooldownComplete)
+    private IEnumerator Cooldown(float time, Image skillImage, System.Action onCooldownComplete)
     {
         skillImage.fillAmount = 0;
         float elapsed = 0;
-
+        yield return new WaitForSeconds(0.2f);
+        PlayerMovement.instance.isAttacking = false;
         while (elapsed < time)
         {
             yield return null;
@@ -71,30 +96,39 @@ public class PlayerAttack : MonoBehaviour
     {
         switch (skillType)
         {
-            case SkillType.BasicAttack:
-                canAttack = isAvailable;
-                break;
             case SkillType.Skill1:
                 canSkill1 = isAvailable;
                 break;
             case SkillType.Skill2:
                 canSkill2 = isAvailable;
                 break;
+            case SkillType.Skill3:
+                canSkill3 = isAvailable;
+                break;
+            case SkillType.Skill4:
+                canSkill4 = isAvailable;
+                break;
         }
+    }
+
+    private IEnumerator WaitBetweenSkills(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        isWaiting = false;
     }
 
     private enum SkillType
     {
-        BasicAttack,
         Skill1,
-        Skill2
+        Skill2,
+        Skill3,
+        Skill4
     }
 
-    void SpawnFire()
+    private void SpawnFire()
     {
         Vector3 spawnPos = transform.position;
         spawnPos.x += transform.localScale.x > 0 ? 0.5f : -0.5f;
         Instantiate(fireObj, spawnPos, Quaternion.identity).SetActive(true);
     }
 }
-

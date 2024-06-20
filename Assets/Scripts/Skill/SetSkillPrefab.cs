@@ -7,14 +7,17 @@ public class SetSkillPrefab : MonoBehaviour
 {
     public float velocitySkill;
     public Transform PlayerPosition;
-
+    AudioManager audioManager;
     private void Start()
     {
+        audioManager = GameObject.FindWithTag("audio").GetComponent<AudioManager>();
         Move_skill();
     }
 
     void Move_skill()
     {
+        AudioManager.instance.PlaySFX("Fire");
+
         float direction = Mathf.Sign(PlayerPosition.localScale.x);
 
         // Chỉnh localScale của đối tượng cùng chiều với Player
