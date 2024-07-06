@@ -9,20 +9,18 @@ public class DanDuoitheo : MonoBehaviour
     public Transform EnemyPosition;
     private void Start()
     {
-        Move_skill();
+        MoveSkill();
+        AudioManager.instance.PlaySFX("BossFire");
     }
-
-    void Move_skill()
+    void MoveSkill()
     {
-        float direction = Mathf.Sign(PlayerPosition.localScale.x);
-
-        Vector3 newScale = transform.localScale;
-        newScale.x = Mathf.Abs(newScale.x) * direction;
-        transform.localScale = newScale;
 
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        Vector2 moveDir = (EnemyPosition.position - PlayerPosition.position).normalized * velocitySkill;
+        Vector2 moveDir = -(PlayerPosition.position - EnemyPosition.position).normalized * velocitySkill;
         rb.velocity = new Vector2(moveDir.x, moveDir.y);
+
+        float angle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
     void DestroySkill()
     {
